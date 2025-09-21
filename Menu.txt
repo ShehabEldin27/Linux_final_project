@@ -1,0 +1,19 @@
+====================================================================================
+                                         Menu
+====================================================================================
+           choose by typing the Frist_Word or the LETTER or the Number
+------------------------------------------------------------------------------------
+1 - DEVELOP: Create, copy, move, rename, delete files and directories  ---> A
+
+2 - SEARCH: Search for files by name, type, size, or modification date ---> B
+
+3 - PERMISSIONS: Change file permissions and ownership                 ---> C
+
+4 - BACKUP: Make backups (tar.gz archives) and restore them            ---> D
+
+5 - SYSTEM: View system info, CPU/memory/disk usage                    ---> E
+
+6 - REPORT: View a log of all actions, and generate a report           ---> F
+------------------------------------------------------------------------------------
+please Follow the instructions or you will have error ---> Number,Frist_word,Letter 
+====================================================================================
