@@ -1,4 +1,17 @@
 #!/bin/bash
+# ---- Utility Functions ----
+pause() {
+  read -p "Press [Enter] key to continue..." fackEnterKey
+}
+
+error_msg() {
+  echo -e "\e[31mError: $1\e[0m"
+}
+
+confirm_action() {
+  read -p "$1 (y/n): " confirm
+  [[ "$confirm" == "y" || "$confirm" == "Y" ]]
+}
 
 while true; do
     clear
@@ -19,46 +32,55 @@ while true; do
     case $choice in
         1)
             echo -e "\nDocuments & Text:"
-            echo ".txt  .pdf  .doc/.docx  .odt  .rtf"
+            echo ".txt  .pdf  .doc/.docx  .odt  .rtf" > ExtentionArray.txt
+	    break
             ;;
         2)
-            echo -e "\nSpreadsheets & Data:"
-            echo ".xls/.xlsx  .csv  .ods"
+            echo -e "\nSpreadsheets & Data:" 
+            echo ".xls/.xlsx  .csv  .ods" > ExtentionArray.txt
+	    break
             ;;
         3)
             echo -e "\nPresentations:"
-            echo ".ppt/.pptx  .odp"
+            echo ".ppt/.pptx  .odp" > ExtentionArray.txt
+	    break
             ;;
         4)
             echo -e "\nImages:"
-            echo ".jpg/.jpeg  .png  .gif  .svg  .webp"
+            echo ".jpg/.jpeg  .png  .gif  .svg  .webp" > ExtentionArray.txt
+	    break
             ;;
         5)
             echo -e "\nAudio:"
-            echo ".mp3  .wav  .flac"
+            echo ".mp3  .wav  .flac" > ExtentionArray.txt
+	    break
             ;;
         6)
             echo -e "\nVideo:"
-            echo ".mp4  .mov  .avi  .mkv"
+            echo ".mp4  .mov  .avi  .mkv" > ExtentionArray.txt
+	    break
             ;;
         7)
             echo -e "\nCode & Scripts:"
-            echo ".html  .css  .js  .py  .java  .cpp/.c/.h  .php  .json  .xml"
+            echo ".html  .css  .js  .py  .java  .cpp/.c/.h  .php  .json  .xml" > ExtentionArray.txt
+	    break
             ;;
         8)
             echo -e "\nCompressed & Disk Files:"
-            echo ".zip  .rar  .7z  .iso"
+            echo ".zip  .rar  .7z  .iso" > ExtentionArray.txt
+	    break
             ;;
         9)
             echo -e "\nSystem & Executables:"
-            echo ".exe  .app  .bat  .sh  .dll"
+            echo ".exe  .app  .bat  .sh  .dll" > ExtentionArray.txt
+	    break
             ;;
         0)
-            echo "Exiting..."
+            echo "Exiting..." > ExtentionArray.txt
             break
             ;;
         *)
-            echo "Invalid choice. Please try again."
+	    error_msg "Invalid choice. Please try again. Try using ---> (0-9)"
             ;;
     esac
 

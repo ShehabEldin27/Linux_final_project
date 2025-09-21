@@ -41,9 +41,38 @@ confirm_action() {
 	[[ "$confirm" == "y" || "$confirm" == "Y" || "$confirm" -eq "yes" || "$confirm" -eq "no" || "$confirm" -eq "Yes" || "$confirm" -eq "No" ]]
 }
 #--------------------------------------------------------------
-#------------------File & Directory Operations-----------------
-
-
+# ---- File & Directory Operations ----
+create_item() {
+while true; do
+    read -p "Enter file or directory name: " name
+    read -p "Create file (f) or directory (d)? " choice
+    if [[ "$choice" == "f" ]]; then
+        while true; do
+            ./cereatemenu.sh
+            cat ./ExtentionArray.txt
+            read -p "Enter file extention : " extention
+            counter=$(awk 'NF' ExtentionArray.txt)
+            for (( i = 1; i <= $counter; i++ )); do
+                extension="$extention"
+                file_extension=$(awk "NR==$i" ExtentionArray.txt)
+                if [[ "$extension" == "$file_extension" ]]; then
+                    touch "$name.$extension" && echo "File '$name.$extension' created."
+                    break
+                else
+                    error_msg "Invalid choice Use the menu"
+                    continue
+                fi
+            done
+            break
+        done
+    elif [[ "$choice" == "d" ]]; then
+        mkdir "$name" && echo "Directory '$name' created."
+        break
+    else
+        error_msg "Invalid choice ---> Try using (f , d)  " 
+    fi
+done
+}
 
 
 
