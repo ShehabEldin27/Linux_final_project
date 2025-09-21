@@ -1,3 +1,6 @@
+#!/bin/bash
+#Menu
+cat << EOF
 ====================================================================================
                                          Menu
 ====================================================================================
@@ -17,3 +20,55 @@
 ------------------------------------------------------------------------------------
 please Follow the instructions or you will have error ---> Number,Frist_word,Letter 
 ====================================================================================
+EOF
+
+# Functions
+#-------- error control ----------------------------------
+
+pause() {
+	read -p "Press [Enter] key to continue..." fackEnterKey
+}
+
+error_msg() {
+	# -e -> option enable interpretation of backslash
+	# \e[31m -> turn color to red 
+	# [0 -> back to normal
+	echo -e "\e[31mError: $1\e[0m"
+}
+
+confirm_action() {
+	read -p "$1 (y/n): " confirm
+	[[ "$confirm" == "y" || "$confirm" == "Y" || "$confirm" -eq "yes" || "$confirm" -eq "no" || "$confirm" -eq "Yes" || "$confirm" -eq "No" ]]
+}
+#--------------------------------------------------------------
+#------------------File & Directory Operations-----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
