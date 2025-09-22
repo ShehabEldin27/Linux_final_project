@@ -76,3 +76,92 @@ while true; do
 done
 }
 
+copy_item() {
+  while true; do
+    read -p "Enter source path: " src
+    FILE= $src
+    if [ -f "$FILE" ]; then
+      echo "File '$FILE' exists and is a regular file."
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "File '$FILE' does not exist or is not a regular file ."
+      continue
+    fi
+  done
+    while true; do
+    read -p "Enter destination path: " dest
+    DIR= $dest
+    if [ -d "$DIR" ]; then
+      echo "Directory '$DIR' exists."
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "Directory '$DIR' does not exist or is not a regular dir ."
+      error_msg "I Will create a Directory with that name --> '$DIR' in your current dirctory and copy the file inside it."
+      mkdir $DIR
+      realpath $DIR
+      break
+    fi
+  done
+  cp -r "$src" "$dest" && echo "Copied '$src' to '$dest'."
+}
+
+move_item() {
+  while true; do
+    read -p "Enter source path: " src
+    FILE= $src
+    if [ -f "$FILE" ]; then
+      echo "File '$FILE' exists and is a regular file."
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "File '$FILE' does not exist or is not a regular file ."
+      continue
+    fi
+  done
+    while true; do
+    read -p "Enter destination path: " dest
+    DIR= $dest
+    if [ -d "$DIR" ]; then
+      echo "Directory '$DIR' exists."
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "Directory '$DIR' does not exist or is not a regular dir ."
+      error_msg "I Will create a Directory with that name --> '$DIR' in your current dirctory and copy the file inside it."
+      mkdir $DIR
+      realpath $DIR
+      break
+    fi
+  done
+  mv "$src" "$dest" && echo "Moved from '$src' to '$dest'."
+}
+
+delete_item() {
+  read -p "Enter file or directory to delete: " target
+  if confirm_action "Are you sure you want to delete '$target'?"; then
+    rm -rf "$target" && echo "'$target' deleted."
+  else
+    echo "Deletion canceled."
+  fi
+}
+
+rename_item() {
+  while true; do
+    read -p "Enter current name and sure to enter it abslote path Like /path/to/some/wer/Current_Name: " current
+    FILE= $current 
+    if [ -f "$FILE" ]; then
+      echo "File '$FILE' exists and is a regular file."
+      name= basename "$FILE"
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "File '$FILE' does not exist or is not a regular file ."
+      continue
+    fi
+  done
+  read -p "Enter new name: " new
+  mv "$name" "$new" && echo "Renamed '$current' ---> '$name' to '$new'."
+}
+
