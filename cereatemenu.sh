@@ -32,47 +32,47 @@ while true; do
     case $choice in
         1)
             echo -e "\nDocuments & Text:"
-            echo ".txt  .pdf  .doc/.docx  .odt  .rtf" > ExtentionArray.txt
+            echo -e " .txt \n .pdf \n .doc \n .docx \n .odt \n .rtf" > ExtentionArray.txt
 	    break
             ;;
         2)
             echo -e "\nSpreadsheets & Data:" 
-            echo ".xls/.xlsx  .csv  .ods" > ExtentionArray.txt
+            echo -e " .xls \n .xlsx \n .csv \n .ods" > ExtentionArray.txt
 	    break
             ;;
         3)
             echo -e "\nPresentations:"
-            echo ".ppt/.pptx  .odp" > ExtentionArray.txt
+            echo -e " .ppt \n .pptx \n .odp" > ExtentionArray.txt
 	    break
             ;;
         4)
             echo -e "\nImages:"
-            echo ".jpg/.jpeg  .png  .gif  .svg  .webp" > ExtentionArray.txt
+            echo -e " .jpg \n .jpeg \n .png \n .gif \n .svg \n .webp" > ExtentionArray.txt
 	    break
             ;;
         5)
             echo -e "\nAudio:"
-            echo ".mp3  .wav  .flac" > ExtentionArray.txt
+            echo -e " .mp3 \n .wav \n .flac" > ExtentionArray.txt
 	    break
             ;;
         6)
             echo -e "\nVideo:"
-            echo ".mp4  .mov  .avi  .mkv" > ExtentionArray.txt
+            echo -e " .mp4 \n .mov \n .avi \n .mkv" > ExtentionArray.txt
 	    break
             ;;
         7)
             echo -e "\nCode & Scripts:"
-            echo ".html  .css  .js  .py  .java  .cpp/.c/.h  .php  .json  .xml" > ExtentionArray.txt
+            echo -e " .html \n .css \n .js \n .py \n .java \n .cpp \n. c \n .h \n .php \n .json \n .xml" > ExtentionArray.txt
 	    break
             ;;
         8)
             echo -e "\nCompressed & Disk Files:"
-            echo ".zip  .rar  .7z  .iso" > ExtentionArray.txt
+            echo -e " .zip \n .rar \n .7z \n .iso" > ExtentionArray.txt
 	    break
             ;;
         9)
             echo -e "\nSystem & Executables:"
-            echo ".exe  .app  .bat  .sh  .dll" > ExtentionArray.txt
+            echo -e " .exe \n .app \n .bat \n .sh \n .dll" > ExtentionArray.txt
 	    break
             ;;
         0)
@@ -87,4 +87,3 @@ while true; do
     echo -e "\nPress Enter to continue..."
     read
 done
-

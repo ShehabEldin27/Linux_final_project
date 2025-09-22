@@ -42,6 +42,7 @@ confirm_action() {
 }
 #--------------------------------------------------------------
 # ---- File & Directory Operations ----
+
 create_item() {
 while true; do
     read -p "Enter file or directory name: " name
@@ -53,11 +54,12 @@ while true; do
             read -p "Enter file extention : " extention
             counter=$(awk 'NF' ExtentionArray.txt)
             for (( i = 1; i <= $counter; i++ )); do
-                extension="$extention"
                 file_extension=$(awk "NR==$i" ExtentionArray.txt)
                 if [[ "$extension" == "$file_extension" ]]; then
                     touch "$name.$extension" && echo "File '$name.$extension' created."
                     break
+		elif [[ "$file_extension" == "Exiting..." ]]; then
+			break
                 else
                     error_msg "Invalid choice Use the menu"
                     continue
@@ -66,38 +68,11 @@ while true; do
             break
         done
     elif [[ "$choice" == "d" ]]; then
-        mkdir "$name" && echo "Directory '$name' created."
+        mkdir "$name" && echo "Directory '$name' created. "
         break
     else
-        error_msg "Invalid choice ---> Try using (f , d)  " 
+        error_msg "Invalid choice ---> Try using (f , d) " 
     fi
 done
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
