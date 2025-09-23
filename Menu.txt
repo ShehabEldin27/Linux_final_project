@@ -164,4 +164,95 @@ rename_item() {
   read -p "Enter new name: " new
   mv "$name" "$new" && echo "Renamed '$current' ---> '$name' to '$new'."
 }
+# ---- Permissions Management ----
+change_permissions() {
+  while true; do
+    read -p "Enter file/directory path: " path
+    FILE= $path
+    if [[ -f $FILE ]]; then 
+        while true; do 
+          read -p -e "Choose the permtion to whome /n user ---> (u , U) /n group ---> (g , G) /n others ---> (o , O)" Whome
+          if [[ "$Whome" == "o" || "$Whome" == "O" ]]; then
+            wwho= 'o'
+            break
+          elif [[  "$Whome" == "g" || "$Whome" == "G" ]]; then
+            wwho= 'g'
+            break
+          elif [[ "$Whome" == "u" || "$Whome" == "U" ]]; then
+            wwho= 'u'
+            break
+          else
+            error_msg "Sorry Canot detecte please --> Follow Instactions  "
+            continue
+          fi
+        done
+        while true; do
+          read -p "Enter permission mode ( add , + ) or ( remove , - ) " mode
+          if [[ "$mode" ==  "+" || "$mode" == "add" || "$mode" ==  "ADD" ]]; then
+            $mode= "+"
+            break
+          elif [[ "$mode" ==  "-" || "$mode" == "remove" || "$mode" ==  "REMOVE" ]]; then
+            $mode= "-"
+            break
+          else
+            error_msg "Sorry Canot detecte please --> Follow Instactions  "
+            continue
+          fi 
+        done
+        while true; do
+          read -p "Enter the permission (excute , X , x) or (Read , r , read) or (Write , write , w)" permission
+          if [[ "$permission" ==  "excute" || "$permission" == "X" || "$permission" ==  "x" ]]; then
+            $permission= "x"
+            break
+          elif [[ "$permission" ==  "Read" || "$permission" == "read" || "$permission" ==  "r" ]]; then
+            $mode= "r"
+            break
+          elif [[ "$permission" ==  "Write" || "$permission" == "write" || "$permission" ==  "w" ]]; then
+            $mode= "w"
+            break
+          else
+            error_msg "Sorry Canot detecte please --> Follow Instactions  "
+            continue
+          fi 
+        done
+        break
+    else 
+      error_msg "Sorry Canot detecte please --> Follow Instactions  "    
+      continue
+    fi
+  done
+  chmod "$wwho""$mode""$permission" "$path" && echo "Permissions updated for '$path'."
+}
+
+change_ownership() {
+  echo "Enter the user_name or the group or the id to give good results"
+  pause
+  while true; do
+      read -p "Enter new owner (user:group): " NAME
+      # user exists
+      if id -u "$NAME" > /dev/null 2>&1; then
+        echo "User '$NAME' exists."
+      # group exists
+      elif getent group "$NAME" >/dev/null 2>&1; then
+        echo "Group '$NAME' exists."
+      else
+        error_msg "Sorry Canot detecte please --> Follow Instactions  "
+        echo "Neither user nor group named '$NAME' exists. --> try again"
+        continue
+      fi
+      # check on the file
+      read -p "Enter file/directory path: " path
+      if [[ -f $path ]]; then
+        echo "File exsist"
+        pause
+        break
+      else
+        error_msg "Sorry Canot detecte please --> Follow Instactions  "
+        echo "Maybe file not exists or the abslote '$path' wrong. --> try again"
+        continue
+      fi
+
+  done
+  sudo chown "$NAME" "$path" && echo "Ownership updated for '$path'."
+}
 
