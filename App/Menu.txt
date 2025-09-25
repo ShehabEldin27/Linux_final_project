@@ -308,6 +308,75 @@ file_menu() {
 }
 
 
+# ---- Backup & Restore ----
+backup_items() {
+  while true; do
+    read -p "Enter items absolute path (space-separated if multiple): " path
+    # Convert relative to absolute paths using realpath if possible
+    valid=true
+    for item in $path; do
+      abs_item=$(realpath "$item" 2>/dev/null)
+      if [[ ! -e "$abs_item" ]]; then
+        error_msg "No such file or directory: $item"
+        error_msg "Maybe wrong absolute path --> TRY AGAIN"
+        valid=false
+        break
+      fi
+      items+="$abs_item "
+    done
+
+    if [[ "$valid" == true ]]; then
+      read -p "Enter backup file name: " backup_name
+      if confirm_action "Are you sure about that backup name?"; then
+        tar -czvf "$backup_name.tar.gz" $items && echo "Backup created: $backup_name.tar.gz"
+        break
+      else
+        error_msg "Canceled ---> TRY AGAIN"
+        continue
+      fi
+    fi
+  done
+}
+
+restore_backup() {
+  read -p "Enter backup file name to restore: " backup_name
+  abs_backup=$(realpath "$backup_name" 2>/dev/null)
+  if [[ -f "$abs_backup" ]]; then
+    tar -xzvf "$abs_backup" && echo "Backup '$abs_backup' restored."
+    return
+  else
+    error_msg "Sorry, file not found."
+    return
+  fi
+}
+
+search_files() {
+  while true; do
+    read -p "Enter search directory: " dir
+    if [[ ! -d "$dir" ]]; then
+      error_msg "Directory does not exist. Try again."
+      continue
+    fi
+
+    read -p "Enter filename pattern (e.g., *.txt): " pattern
+    results=$(find "$dir" -name "$pattern" 2>/dev/null)
+
+    if [[ -z "$results" ]]; then
+      error_msg "No files found matching pattern '$pattern' in $dir."
+      read -p "Do you want to try again? (y/n): " retry
+      if [[ "$retry" != "y" && "$retry" != "Y" ]]; then
+        break
+      else
+        continue
+      fi
+    else
+      echo "Files found:"
+      echo "$results"
+      break
+    fi
+  done
+}
+
 # ---- Main Loop ----
 while true; do
   show_menu
@@ -346,5 +415,6 @@ while true; do
   esac
   pause
 done
-
+clear
+echo "" >> report.txt
 
