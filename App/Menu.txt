@@ -1,0 +1,339 @@
+#!/bin/bash
+# Functions
+#-------- error control ----------------------------------
+
+pause() {
+	read -p "Press [Enter] key to continue..." fackEnterKey
+}
+
+error_msg() {
+	# -e -> option enable interpretation of backslash
+	# \e[31m -> turn color to red 
+	# [0 -> back to normal
+	echo -e "\e[31mError: $1\e[0m"
+}
+
+confirm_action() {
+	read -p "$1 (y/n): " confirm
+	[[ "$confirm" == "y" || "$confirm" == "Y" || "$confirm" -eq "yes" || "$confirm" -eq "no" || "$confirm" -eq "Yes" || "$confirm" -eq "No" ]]
+}
+#--------------------------------------------------------------
+# ---- File & Directory Operations ----
+
+create_item() {
+while true; do
+    read -p "Enter file or directory name: " name
+    read -p "Create file (f) or directory (d)? " choice
+    if [[ "$choice" == "f" ]]; then
+        while true; do
+            ./cereatemenu.sh
+            cat ./ExtentionArray.txt
+            read -p "Enter file extention : " extention
+            counter=$(awk 'NF' ExtentionArray.txt)
+            for (( i = 1; i <= $counter; i++ )); do
+                file_extension=$(awk "NR==$i" ExtentionArray.txt)
+                if [[ "$extension" == "$file_extension" ]]; then
+                    touch "$name.$extension" && echo "File '$name.$extension' created."
+                    break
+		elif [[ "$file_extension" == "Exiting..." ]]; then
+			break
+                else
+                    error_msg "Invalid choice Use the menu"
+                    continue
+                fi
+            done
+            break
+        done
+    elif [[ "$choice" == "d" ]]; then
+        mkdir "$name" && echo "Directory '$name' created. "
+        break
+    else
+        error_msg "Invalid choice ---> Try using (f , d) " 
+    fi
+done
+}
+
+copy_item() {
+  while true; do
+    read -p "Enter source path: " src
+    FILE= $src
+    if [ -f "$FILE" ]; then
+      echo "File '$FILE' exists and is a regular file."
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "File '$FILE' does not exist or is not a regular file ."
+      continue
+    fi
+  done
+    while true; do
+    read -p "Enter destination path: " dest
+    DIR= $dest
+    if [ -d "$DIR" ]; then
+      echo "Directory '$DIR' exists."
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "Directory '$DIR' does not exist or is not a regular dir ."
+      error_msg "I Will create a Directory with that name --> '$DIR' in your current dirctory and copy the file inside it."
+      mkdir $DIR
+      realpath $DIR
+      break
+    fi
+  done
+  cp -r "$src" "$dest" && echo "Copied '$src' to '$dest'."
+}
+
+move_item() {
+  while true; do
+    read -p "Enter source path: " src
+    FILE= $src
+    if [ -f "$FILE" ]; then
+      echo "File '$FILE' exists and is a regular file."
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "File '$FILE' does not exist or is not a regular file ."
+      continue
+    fi
+  done
+    while true; do
+    read -p "Enter destination path: " dest
+    DIR= $dest
+    if [ -d "$DIR" ]; then
+      echo "Directory '$DIR' exists."
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "Directory '$DIR' does not exist or is not a regular dir ."
+      error_msg "I Will create a Directory with that name --> '$DIR' in your current dirctory and copy the file inside it."
+      mkdir $DIR
+      realpath $DIR
+      break
+    fi
+  done
+  mv "$src" "$dest" && echo "Moved from '$src' to '$dest'."
+}
+
+delete_item() {
+  read -p "Enter file or directory to delete: " target
+  if confirm_action "Are you sure you want to delete '$target'?"; then
+    rm -rf "$target" && echo "'$target' deleted."
+  else
+    echo "Deletion canceled."
+  fi
+}
+
+rename_item() {
+  while true; do
+    read -p "Enter current name and sure to enter it abslote path Like /path/to/some/wer/Current_Name: " current
+    FILE= $current 
+    if [ -f "$FILE" ]; then
+      echo "File '$FILE' exists and is a regular file."
+      name= basename "$FILE"
+      break
+    else
+      error_msg "Maybe You enter a relatve path or wrong path use the abslote path"
+      echo "File '$FILE' does not exist or is not a regular file ."
+      continue
+    fi
+  done
+  read -p "Enter new name: " new
+  mv "$name" "$new" && echo "Renamed '$current' ---> '$name' to '$new'."
+}
+# ---- Permissions Management ----
+change_permissions() {
+  while true; do
+    read -p "Enter file/directory path: " path
+    FILE= $path
+    if [[ -f $FILE ]]; then 
+        while true; do 
+          read -p -e "Choose the permtion to whome /n user ---> (u , U) /n group ---> (g , G) /n others ---> (o , O)" Whome
+          if [[ "$Whome" == "o" || "$Whome" == "O" ]]; then
+            wwho= 'o'
+            break
+          elif [[  "$Whome" == "g" || "$Whome" == "G" ]]; then
+            wwho= 'g'
+            break
+          elif [[ "$Whome" == "u" || "$Whome" == "U" ]]; then
+            wwho= 'u'
+            break
+          else
+            error_msg "Sorry Canot detecte please --> Follow Instactions  "
+            continue
+          fi
+        done
+        while true; do
+          read -p "Enter permission mode ( add , + ) or ( remove , - ) " mode
+          if [[ "$mode" ==  "+" || "$mode" == "add" || "$mode" ==  "ADD" ]]; then
+            $mode= "+"
+            break
+          elif [[ "$mode" ==  "-" || "$mode" == "remove" || "$mode" ==  "REMOVE" ]]; then
+            $mode= "-"
+            break
+          else
+            error_msg "Sorry Canot detecte please --> Follow Instactions  "
+            continue
+          fi 
+        done
+        while true; do
+          read -p "Enter the permission (excute , X , x) or (Read , r , read) or (Write , write , w)" permission
+          if [[ "$permission" ==  "excute" || "$permission" == "X" || "$permission" ==  "x" ]]; then
+            $permission= "x"
+            break
+          elif [[ "$permission" ==  "Read" || "$permission" == "read" || "$permission" ==  "r" ]]; then
+            $mode= "r"
+            break
+          elif [[ "$permission" ==  "Write" || "$permission" == "write" || "$permission" ==  "w" ]]; then
+            $mode= "w"
+            break
+          else
+            error_msg "Sorry Canot detecte please --> Follow Instactions  "
+            continue
+          fi 
+        done
+        break
+    else 
+      error_msg "Sorry Canot detecte please --> Follow Instactions  "    
+      continue
+    fi
+  done
+  chmod "$wwho""$mode""$permission" "$path" && echo "Permissions updated for '$path'."
+}
+
+change_ownership() {
+  echo "Enter the user_name or the group or the id to give good results"
+  pause
+  while true; do
+      read -p "Enter new owner (user:group): " NAME
+      # user exists
+      if id -u "$NAME" > /dev/null 2>&1; then
+        echo "User '$NAME' exists."
+      # group exists
+      elif getent group "$NAME" >/dev/null 2>&1; then
+        echo "Group '$NAME' exists."
+      else
+        error_msg "Sorry Canot detecte please --> Follow Instactions  "
+        echo "Neither user nor group named '$NAME' exists. --> try again"
+        continue
+      fi
+      # check on the file
+      read -p "Enter file/directory path: " path
+      if [[ -f $path ]]; then
+        echo "File exsist"
+        pause
+        break
+      else
+        error_msg "Sorry Canot detecte please --> Follow Instactions  "
+        echo "Maybe file not exists or the abslote '$path' wrong. --> try again"
+        continue
+      fi
+
+  done
+  sudo chown "$NAME" "$path" && echo "Ownership updated for '$path'."
+}
+
+# ---- System Monitoring ----
+show_system_info() {
+  echo "OS: $(uname -o)"
+  echo "Hostname: $(hostname)"
+  echo "Uptime: $(uptime -p)"
+  echo "Date/Time: $(date)"
+}
+
+monitor_cpu() {
+  echo "CPU Usage:"
+  mpstat | awk '/all/ {print 100 - $13"% used"}'
+}
+
+monitor_memory() {
+  echo "Memory Usage:"
+  free -h 
+}
+
+monitor_disk() {
+  echo "Disk Usage:"
+  df -h
+}
+
+generate_report(){
+    echo "===== System Report ====="
+    show_system_info
+    monitor_cpu
+    monitor_memory
+    monitor_disk
+  } >> report.txt
+
+# ---- Interactive Menu ----
+show_menu() {
+  clear
+  echo "========== Main Menu =========="
+  echo "1. File/Directory Operations"
+  echo "2. Search Files"
+  echo "3. Change Permissions"
+  echo "4. Change Ownership"
+  echo "5. Backup & Restore"
+  echo "6. System Monitoring"
+  echo "7. Generate System Report"
+  echo "8. Exit"
+}
+
+file_menu() {
+  echo "---- File Operations ----"
+  echo "1. Create"
+  echo "2. Copy"
+  echo "3. Move"
+  echo "4. Rename"
+  echo "5. Delete"
+  echo "6. Back"
+  read -p "Choose an option: " choice
+  case $choice in
+    1) create_item ;;
+    2) copy_item ;;
+    3) move_item ;;
+    4) rename_item ;;
+    5) delete_item ;;
+    6) return ;;
+    *) error_msg "Invalid option." ;;
+  esac
+  pause
+}
+
+
+# ---- Main Loop ----
+while true; do
+  show_menu
+  read -p "Choose an option: " option
+  case $option in
+    1) file_menu ;;
+    2) search_files ;;
+    3) change_permissions ;;
+    4) change_ownership ;;
+    5)
+      echo "1. Backup"
+      echo "2. Restore"
+      read -p "Choose: " b
+      [[ $b == "1" ]] && backup_items || restore_backup
+      ;;
+    6)
+      echo "1. System Info"
+      echo "2. CPU"
+      echo "3. Memory"
+      echo "4. Disk"
+      read -p "Choose: " m
+      case $m in
+        1) show_system_info ;;
+        2) monitor_cpu ;;
+        3) monitor_memory ;;
+        4) monitor_disk ;;
+        *) error_msg "Invalid option." ;;
+      esac
+      ;;
+    7) generate_report ;;
+    8) echo "Goodbye!"; exit 0 ;;
+    *) error_msg "Invalid option." ;;
+  esac
+  pause
+done
+
+
