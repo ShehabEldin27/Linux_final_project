@@ -350,33 +350,24 @@ restore_backup() {
   fi
 }
 
-search_files() {
-  while true; do
-    read -p "Enter search directory: " dir
-    if [[ ! -d "$dir" ]]; then
-      error_msg "Directory does not exist. Try again."
-      continue
-    fi
+search_file(){
+  echo "Search: "
+  read -p 'Name: ' Pattern
+  read -p 'Type (file=f, dir=d): ' Type
+  read -p 'Size: ' Size
+  read -p 'Modified in last N days: ' Days
 
-    read -p "Enter filename pattern (e.g., *.txt): " pattern
-    results=$(find "$dir" -name "$pattern" 2>/dev/null)
+  cmd=(find .)
 
-    if [[ -z "$results" ]]; then
-      error_msg "No files found matching pattern '$pattern' in $dir."
-      read -p "Do you want to try again? (y/n): " retry
-      if [[ "$retry" != "y" && "$retry" != "Y" ]]; then
-        break
-      else
-        continue
-      fi
-    else
-      echo "Files found:"
-      echo "$results"
-      break
-    fi
-  done
+  [[ -n "$Pattern" ]] && cmd+=(-name "$Pattern")
+  [[ "$Type" == "f" ]] && cmd+=(-type f)
+  [[ "$Type" == "d" ]] && cmd+=(-type d)
+  [[ -n "$Size" ]] && cmd+=(-size "$Size")
+  [[ -n "$Days" ]] && cmd+=(-mtime "$Days")
+
+  echo "Search command: ${cmd[*]}"
+  "${cmd[@]}"
 }
-
 # ---- Main Loop ----
 while true; do
   show_menu
